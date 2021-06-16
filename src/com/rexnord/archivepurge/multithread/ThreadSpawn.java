@@ -1,6 +1,8 @@
 package com.rexnord.archivepurge.multithread;
 
 import java.io.File;
+import java.lang.management.ManagementFactory;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 
@@ -20,7 +22,7 @@ class TreadSpawn extends Thread {
 	public void run() {
 		File rootDir = new File(getBasepath());
 
-		//System.out.println(rootDir);
+		logger.info("Scanning files in directory:= "+rootDir);
 
 		for (File f : rootDir.listFiles()) {
 			if (f.isDirectory()) {
@@ -42,7 +44,7 @@ class TreadSpawn extends Thread {
 								.currentTimeMillis()
 								- (Integer.parseInt(ArchivePurge_Main.props.getProperty(key)) * 24 * 60 * 60 * 1000L)) {
 							
-							// f.delete();
+							 f.delete();
 							
 							logger.info(f + " deleted successfully, file size:= " + f.length() / 1024 + " kb," + " File count:= " + counter);
 							
@@ -55,6 +57,17 @@ class TreadSpawn extends Thread {
 			}
 
 		}
+		
+		logger.info("Threadname:" + Thread.currentThread().getName() + ", Thread CPU TIME: "
+				+TimeUnit.NANOSECONDS.
+                toSeconds( ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime()) 
+				+ ", Memory used: Heap : ="
+				+ ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getUsed() / (1024.0) + " kb"
+				+ ", Memory used: Non Heap := "
+				+ ManagementFactory.getMemoryMXBean().getNonHeapMemoryUsage().getUsed() / (1024.0) + " kb");
+
+		logger.info(
+				"###############################################THREAD JOB COMPLETED#####################################################################################");
 
 		System.gc();
 	}

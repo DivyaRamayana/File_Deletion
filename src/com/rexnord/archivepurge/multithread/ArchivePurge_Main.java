@@ -26,7 +26,6 @@ public class ArchivePurge_Main {
 			logger.info("Properties file loaded successfully");
 		}
 		String propertiesFileName = args[0];
-
 		getproperties(propertiesFileName);
 
 		new TreadSpawn(Deletion_Folder).start();
